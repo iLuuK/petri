@@ -1,0 +1,7 @@
+{
+  "petris": {
+    "byId": "helloWorldById",
+    "byNum": "helloWorldByNum",
+    "all": "helloWorldAll"
+  }
+}
