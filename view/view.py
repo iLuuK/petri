@@ -1,3 +1,4 @@
+import time
 import tkinter.messagebox
 import tkinter
 from shared.iController import IController
@@ -41,22 +42,23 @@ class View:
         self.show()
 
     def show(self):
+        time.sleep(0.2)
+        self.__canvas.delete("all");
         totalCells = len(self.__model.getCells())
         totalKnowCells = len(self.__knowCells)
         print("Cells new : ", totalCells - totalKnowCells, " old : ", totalKnowCells)
         for cell in self.__model.getCells():
-            if not cell.getId() in self.__knowCells:
-                self.__knowCells.append(cell.getId())
-                if self.__petriPythonConf["drawCellBorder"] == 0:
-                    __outline = colorToHex(cell.getColor())
-                else:
-                    __outline = "white"
-                self.__canvas.create_rectangle(self.__cellGetX0Scaled(cell),
-                                               self.__cellGetY0Scaled(cell),
-                                               self.__cellGetX1Scaled(cell),
-                                               self.__cellGetY1Scaled(cell),
-                                               fill=colorToHex(cell.getColor()),
-                                               outline=__outline)
+            self.__knowCells.append(cell.getId())
+            if self.__petriPythonConf["drawCellBorder"] == 0:
+                __outline = colorToHex(cell.getColor())
+            else:
+                __outline = "white"
+            self.__canvas.create_rectangle(self.__cellGetX0Scaled(cell),
+                                           self.__cellGetY0Scaled(cell),
+                                           self.__cellGetX1Scaled(cell),
+                                           self.__cellGetY1Scaled(cell),
+                                           fill=colorToHex(cell.getColor()),
+                                           outline=__outline)
         self.__window.update()
 
     def __cellGetX0Scaled(self, cell: ICell):

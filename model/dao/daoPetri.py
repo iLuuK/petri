@@ -4,7 +4,6 @@ from shared.iPetri import IPetri
 from model.data.petri import Petri
 from model.data.cell import Cell
 from model.data.cell import Color
-from model.data.behavior.classicDie import ClassicDie
 
 
 class DAOPetri(DAO):

@@ -31,3 +31,8 @@ class Color(IColor, Data):
         self.__red = max(0, self.__red - darkCoefficient)
         self.__green = max(0, self.__green - darkCoefficient)
         self.__blue = max(0, self.__blue - darkCoefficient)
+
+    def lighter(self, lightCoefficient: int):
+        self.__red = min(255, self.__red + lightCoefficient * 2)
+        self.__green = min(255, self.__green + lightCoefficient * 2)
+        self.__blue = min(255, self.__blue + lightCoefficient * 2)

@@ -18,3 +18,7 @@ class IColor(IData):
     @abstractmethod
     def darken(self, darkCoefficient: int):
         ...
+
+    @abstractmethod
+    def lighter(self, lightCoefficient: int):
+        ...
