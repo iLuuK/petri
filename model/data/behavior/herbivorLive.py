@@ -8,12 +8,14 @@ import random
 
 class HerbivorLive(BehaviorLive):
     __energyStart = 20
-    __energyReproduce = 70
+    __energyReproduce = 80
     __energyWait = 1
     __energyMove = 2
     __baseColor = Color(0, 255, 0)
-    __scaleUp1 = 30
-    __scaleUp2 = 50
+    __scaleUp1 = 45
+    __scaleUp2 = 60
+    __rangeFeed = 20
+    __rangeGoToFeed = 1
 
     def __init__(self):
         BehaviorLive.__init__(self, self.__energyStart, self.__baseColor)
@@ -108,7 +110,7 @@ class HerbivorLive(BehaviorLive):
         return False
 
     def __feed(self):
-        feedPosition = self.getCell().getPetri().canFeed(self.getCell().getX(), self.getCell().getY(), CellType.GRASS)
+        feedPosition = self.getCell().getPetri().canFeed(self.__rangeFeed, self.getCell().getX(), self.getCell().getY(), [CellType.GRASS])
 
         if feedPosition:
             canFeed = False
@@ -118,16 +120,17 @@ class HerbivorLive(BehaviorLive):
                         canFeed = True
 
             if canFeed:
-                food = self.getCell().getPetri().getCell(feedPosition[0], feedPosition[1])
+                food = self.getCell().getPetri().getCell(feedPosition[0], feedPosition[1], [CellType.GRASS])
+
                 if food is None:
                     return False
-                newCell = self.getCell()
+
+                newCell = Cell(self.getCell().getPetri(), HerbivorLive(), self.getCell().getBirthStep() + 1, CellType.HERBIVOR)
                 newCell.setEnergy(self.getCell().getEnergy() + food.getEnergy())
                 food.setIsAlive(False)
                 newCell.setColor(Color(0, 255, 0))
                 newCell.setX(self.getCell().getX())
                 newCell.setY(self.getCell().getY())
-                newCell.setType(CellType.HERBIVOR)
                 newCell.setScale(self.getCell().getScale())
 
                 self.getCell().getPetri().addCell(newCell, self.getCell())
@@ -141,43 +144,37 @@ class HerbivorLive(BehaviorLive):
             for scaleY in range(0, self.getCell().getScale()):
                 valueX = (self.getCell().getX() + scaleX) % self.getCell().getPetri().getWidth()
                 valueY = (self.getCell().getY() + scaleY) % self.getCell().getPetri().getHeight()
-                if self.getCell().getPetri().isCellTypeNotSame(self.getCell().getId(), valueX, valueY, CellType.HERBIVOR):
+                if self.getCell().getPetri().isCellTypeNotSame(self.getCell().getCustomId(), valueX, valueY, CellType.HERBIVOR):
                     value = False
 
         return value
 
     def hasNotHerbivor(self, x: int, y: int) -> bool:
-        return not self.getCell().getPetri().isCellTypeNotSame(self.getCell().getId(), x, y, CellType.HERBIVOR)
+        return not self.getCell().getPetri().isCellTypeNotSame(self.getCell().getCustomId(), x, y, CellType.HERBIVOR)
 
     def __goToFeed(self):
-        feedPosition = self.getCell().getPetri().canFeed(self.getCell().getX(), self.getCell().getY(), CellType.GRASS)
+        feedPosition = self.getCell().getPetri().canFeed(self.__rangeFeed, self.getCell().getX(), self.getCell().getY(), [CellType.GRASS])
         if feedPosition and self.getCell().canAction(self.__energyMove) and self.hasNotHerbivor(feedPosition[0], feedPosition[1]):
 
             newPositionX = self.getCell().getX()
             newPositionY = self.getCell().getY()
 
-            if self.getCell().getX() == feedPosition[0]:
-                if abs(self.getCell().getY() - feedPosition[1]) < 5:
-                    if (self.getCell().getY() - feedPosition[1] < 0):
-                        newPositionY += 1
-                    else:
-                        newPositionY -= 1
-                else:
-                    if (self.getCell().getY() - feedPosition[1] < 0):
-                        newPositionY -= 1
-                    else:
-                        newPositionY += 1
-            else:
-                if abs(self.getCell().getX() - feedPosition[0]) < 5:
-                    if (self.getCell().getX() - feedPosition[0] < 0):
-                        newPositionX += 1
-                    else:
-                        newPositionX -= 1
-                else:
-                    if (self.getCell().getX() - feedPosition[0] < 0):
-                        newPositionX -= 1
-                    else:
-                        newPositionX += 1
+            distance = abs(feedPosition[0] - newPositionX) + abs(feedPosition[1] - newPositionY)
+            for directionX in range(self.__rangeGoToFeed * -1, self.__rangeGoToFeed + 1):
+                valueX = (newPositionX + directionX) % self.getCell().getPetri().getWidth()
+                valueY = newPositionY
+                if (abs(feedPosition[0] - valueX) + abs(feedPosition[1] - valueY)) < distance:
+                    distance = abs(feedPosition[0] - valueX) + abs(feedPosition[1] - valueY)
+                    newPositionX = valueX
+                    newPositionY = valueY
+
+            for directionY in range(self.__rangeGoToFeed * -1, self.__rangeGoToFeed + 1):
+                valueX = newPositionX
+                valueY = (newPositionY + directionY) % self.getCell().getPetri().getHeight()
+                if (abs(feedPosition[0] - valueX) + abs(feedPosition[1] - valueY)) < distance:
+                    distance = abs(feedPosition[0] - valueX) + abs(feedPosition[1] - valueY)
+                    newPositionX = valueX
+                    newPositionY = valueY
 
             newPositionX = newPositionX % self.getCell().getPetri().getWidth()
             newPositionY = newPositionY % self.getCell().getPetri().getHeight()

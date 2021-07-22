@@ -1,4 +1,6 @@
 from abc import abstractmethod
+from uuid import UUID
+
 from shared.iColor import IColor
 from shared.iData import IData
 from shared.cellType import CellType
@@ -23,6 +25,10 @@ class ICell(IData):
 
     @abstractmethod
     def getColor(self) -> IColor:
+        ...
+
+    @abstractmethod
+    def getCustomId(self) -> UUID:
         ...
 
     @abstractmethod

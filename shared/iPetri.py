@@ -12,11 +12,11 @@ class IPetri(IData):
         ...
 
     @abstractmethod
-    def getCells(self) -> [ICell]:
+    def getCells(self) -> []:
         ...
 
     @abstractmethod
-    def getCell(self, x: int, y: int) -> ICell:
+    def getCell(self, x: int, y: int, cellTypes: [CellType]) -> ICell:
         ...
 
     @abstractmethod
@@ -58,7 +58,7 @@ class IPetri(IData):
         ...
 
     @abstractmethod
-    def canFeed(self, x: int, y: int, cellType: CellType):
+    def canFeed(self, rangeFeed: int, x: int, y: int, cellType: []):
         ...
 
     @abstractmethod

@@ -25,7 +25,7 @@ class Controller(IController):
                     self.__model.getRoundCell(round)
                     self.__view.show()
                 else:
-                    time.sleep(1)
+                    time.sleep(5)
         else:
             self.__model.savePetri()
             while self.__run:
@@ -38,7 +38,6 @@ class Controller(IController):
 
                     for cell in oldCells:
                         cell.live()
-
                 else:
                     time.sleep(1)
 

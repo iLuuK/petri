@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from model.dao.daoRound import DAORound
+from model.data.behavior.carnivorousLive import CarnivorousLive
 from model.data.behavior.grassDie import GrassDie
 from model.data.behavior.herbivorLive import HerbivorLive
 from model.dbconnector import DBConnector
@@ -27,6 +28,8 @@ class Model(IModel):
             self.__petri.addCellFirstTime(Cell(self.__petri, HerbivorLive(), 0, CellType.HERBIVOR))
         for i in range(self.__petriPythonConf["nbCellsGrass"]):
             self.__petri.addCellFirstTime(Cell(self.__petri, GrassDie(), 0, CellType.GRASS))
+        for i in range(self.__petriPythonConf["nbCellsCarnivorous"]):
+                self.__petri.addCellFirstTime(Cell(self.__petri, CarnivorousLive(), 0, CellType.CARNIVOROUS))
 
     def getRoundCell(self, round: int):
         cells = self.__daoRound.loadRound(self.__petri.getRoundsId()[round], self.__petri)

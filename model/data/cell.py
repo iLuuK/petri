@@ -1,3 +1,5 @@
+import uuid
+
 from shared.iCell import ICell
 from shared.iColor import IColor
 from model.data.data import Data
@@ -21,10 +23,14 @@ class Cell(ICell, Data):
         self.__energy = behaviorLive.getEnergy()
         self.__isAlive = True
         self.__sizeScale = 1
+        self.__customId = uuid.uuid1()
         Data.__init__(self, id(self))
 
     def getX(self) -> int:
         return self.__x
+
+    def getCustomId(self) -> uuid.UUID:
+        return self.__customId
 
     def setX(self, x: int):
         self.__x = x
@@ -85,6 +91,7 @@ class Cell(ICell, Data):
     def setEnergy(self, energy: int):
         self.__energy = energy
 
+
     def canAction(self, energy: int) -> int:
         return self.__energy > energy
 
@@ -92,6 +99,7 @@ class Cell(ICell, Data):
         self.__isAlive = isAlive
         if not isAlive:
             self.setEnergy(0)
+        self.getPetri().removeCell(self)
 
     def getIsAlive(self) -> bool:
         return self.__isAlive
