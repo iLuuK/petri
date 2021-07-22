@@ -114,8 +114,7 @@ class HerbivorLive(BehaviorLive):
             canFeed = False
             for scaleX in range(self.getCell().getScale()):
                 for scaleY in range(self.getCell().getScale()):
-                    if feedPosition[0] == self.getCell().getX() + scaleX and feedPosition[
-                        1] == self.getCell().getY() + scaleY:
+                    if feedPosition[0] == self.getCell().getX() + scaleX and feedPosition[1] == self.getCell().getY() + scaleY:
                         canFeed = True
 
             if canFeed:
@@ -135,7 +134,7 @@ class HerbivorLive(BehaviorLive):
         return False
 
     def canGo(self, x: int, y: int) -> bool:
-        return not self.getCell().getPetri().isCellType(x, y, CellType.HERBIVOR)
+        return not self.getCell().getPetri().isCellTypeNotSame(self.getCell().getId(), x, y, CellType.HERBIVOR)
 
     def __goToFeed(self):
         feedPosition = self.getCell().getPetri().canFeed(self.getCell().getX(), self.getCell().getY(), CellType.GRASS)
@@ -170,13 +169,10 @@ class HerbivorLive(BehaviorLive):
             newPositionX = newPositionX % self.getCell().getPetri().getWidth()
             newPositionY = newPositionY % self.getCell().getPetri().getHeight()
 
-            futureCell = self.getCell().getPetri().getCell(newPositionX, newPositionY)
-            if futureCell is not None and self.canGo(newPositionX, newPositionY):
-                if futureCell.getType() != CellType.GRASS:
-                    return False
+            if not self.canGo(newPositionX, newPositionY):
+                return False
 
-            newCell = Cell(self.getCell().getPetri(), HerbivorLive(), self.getCell().getBirthStep() + 1,
-                           CellType.HERBIVOR)
+            newCell = Cell(self.getCell().getPetri(), HerbivorLive(), self.getCell().getBirthStep() + 1, CellType.HERBIVOR)
             newCell.setEnergy(self.getCell().getEnergy() - self.__energyMove)
             newCell.setColor(Color(0, 255, 0))
 

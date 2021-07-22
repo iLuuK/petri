@@ -46,6 +46,13 @@ class Petri(Data, IPetri):
                 value = True
         return value
 
+    def isCellTypeNotSame(self, actualId: int, x: int, y: int, cellType: CellType) -> bool:
+        value = False
+        for cell in self.__cells:
+            if cell.getY() == y and cell.getX() == x and cell.getType() == cellType and cell.getId() != actualId:
+                value = True
+        return value
+
     def getCell(self, x: int, y: int) -> ICell:
         value = type(None)()
         for cell in self.__cells:
@@ -79,7 +86,7 @@ class Petri(Data, IPetri):
     def isSquareFree(self, scale: int, x: int, y: int) -> bool:
         value = True
         for scaleX in range(-scale + 1, scale - 1):
-            for scaleY in range(-scale, scale):
+            for scaleY in range(-scale + 1, scale - 1):
                 valueX = (x + scaleX) % self.__width
                 valueY = (y + scaleY) % self.__width
                 if 0 <= x < self.__width and 0 <= y < self.__height:

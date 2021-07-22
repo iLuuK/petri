@@ -24,6 +24,10 @@ class IPetri(IData):
         ...
 
     @abstractmethod
+    def isCellTypeNotSame(self, actualId: int, x: int, y: int, cellType: CellType) -> bool:
+        ...
+
+    @abstractmethod
     def addCellFirstTime(self, cell: ICell):
         ...
 
