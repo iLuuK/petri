@@ -1,3 +1,6 @@
+from uuid import UUID
+
+from model.dao.daoRound import DAORound
 from model.data.behavior.grassDie import GrassDie
 from model.data.behavior.herbivorLive import HerbivorLive
 from model.dbconnector import DBConnector
@@ -15,6 +18,7 @@ class Model(IModel):
     def __init__(self):
         self.__dbConnector = DBConnector()
         self.__daoPetri = DAOPetri(self.__dbConnector)
+        self.__daoRound = DAORound(self.__dbConnector)
         self.__loadConf()
         self.__petriIdLoad = self.__petriPythonConf["loadPetriId"]
         self.__isLoadPetri = self.__petriPythonConf["isLoadPetri"]
@@ -25,7 +29,8 @@ class Model(IModel):
             self.__petri.addCellFirstTime(Cell(self.__petri, GrassDie(), 0, CellType.GRASS))
 
     def getRoundCell(self, round: int):
-        self.__petri = self.__daoPetri.loadRound(self.__petri.getId(), round)
+        cells = self.__daoRound.loadRound(self.__petri.getRoundsId()[round], self.__petri)
+        self.__petri.setCells(cells)
 
     def getNumberRound(self):
         return self.__petri.getNumberRound()
@@ -52,8 +57,9 @@ class Model(IModel):
     def savePetri(self):
         self.__daoPetri.savePetri(self.__petri)
 
-    def saveRound(self):
-        self.__daoPetri.saveRound(self.__petri)
+    def saveRound(self, uuid: UUID):
+        self.__daoPetri.saveRound(self.__petri, uuid)
+        self.__daoRound.saveRound(self.__petri, uuid)
 
     def updateNumberRound(self):
         self.__petri.updateNumberRound()

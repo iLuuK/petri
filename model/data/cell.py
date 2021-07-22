@@ -48,6 +48,9 @@ class Cell(ICell, Data):
         self.__color = color
         self.__color.lighter(self.getEnergy())
 
+    def setColorWithoutEffect(self, color: IColor):
+        self.__color = color
+
 
     def setColorNoLumen(self, color: IColor):
         self.__color = color

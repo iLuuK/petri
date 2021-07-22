@@ -1,3 +1,5 @@
+import uuid
+
 from model.model import Model
 from shared.iModel import IModel
 from shared.action import Action
@@ -28,12 +30,15 @@ class Controller(IController):
             self.__model.savePetri()
             while self.__run:
                 if self.__play:
+                    uid = uuid.uuid4()
+                    self.__model.saveRound(uid)
+                    self.__model.updateNumberRound()
                     self.__view.show()
                     oldCells = self.__model.getCells().copy()
-                    self.__model.saveRound()
+
                     for cell in oldCells:
                         cell.live()
-                    self.__model.updateNumberRound()
+
                 else:
                     time.sleep(1)
 

@@ -20,6 +20,19 @@ class IPetri(IData):
         ...
 
     @abstractmethod
+    def setCells(self, cells: [ICell]):
+        ...
+
+    @abstractmethod
+    def setRoundsId(self, roundsId: [int]):
+        ...
+
+    @abstractmethod
+    def getRoundsId(self) -> [int]:
+        ...
+
+
+    @abstractmethod
     def isCellType(self, x: int, y: int, cellType: CellType) -> bool:
         ...
 

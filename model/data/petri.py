@@ -6,7 +6,10 @@ import numpy
 
 
 class Petri(Data, IPetri):
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int, rounds=None):
+        if rounds is None:
+            rounds = []
+        self.__rounds = rounds
         self.__numberRound = 0
         self.__width = width
         self.__height = height
@@ -39,6 +42,9 @@ class Petri(Data, IPetri):
 
     def getCells(self) -> [ICell]:
         return self.__cells
+
+    def setCells(self, cells: [ICell]):
+        self.__cells = cells
 
     def isCellType(self, x: int, y: int, cellType: CellType) -> bool:
         value = False
@@ -118,3 +124,9 @@ class Petri(Data, IPetri):
                             distance = newDistance
 
         return value
+
+    def setRoundsId(self, roundsId: [int]):
+        self.__rounds = roundsId
+
+    def getRoundsId(self) -> [int]:
+        return self.__rounds

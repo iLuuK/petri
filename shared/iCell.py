@@ -26,6 +26,14 @@ class ICell(IData):
         ...
 
     @abstractmethod
+    def setColor(self, color: IColor):
+        ...
+
+    @abstractmethod
+    def setColorWithoutEffect(self, color: IColor):
+        ...
+
+    @abstractmethod
     def getPetri(self):
         ...
 

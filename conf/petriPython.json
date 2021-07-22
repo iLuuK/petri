@@ -1,9 +1,9 @@
 {
   "width": 150,
   "height": 150,
-  "nbCellsHerbivor": 50,
+  "nbCellsHerbivor": 10,
   "nbCellsGrass": 1200,
   "drawCellBorder": 0,
-  "isLoadPetri": false,
-  "loadPetriId": 2950792245744
+  "isLoadPetri": true,
+  "loadPetriId": 1599063325712
 }
