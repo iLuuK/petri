@@ -1,5 +1,7 @@
 from model.data.behavior.grassDie import GrassDie
 from model.data.behavior.herbivorLive import HerbivorLive
+from model.data.behavior.carnivorLive import CarnivorLive
+from model.data.behavior.omnivorLive import OmenivorLive
 from model.dbconnector import DBConnector
 from shared.cellType import CellType
 from shared.iCell import ICell
@@ -20,7 +22,11 @@ class Model(IModel):
         self.__petri: IPetri = Petri(self.__petriPythonConf["width"], self.__petriPythonConf["height"])
         for i in range(self.__petriPythonConf["nbCellsHerbivor"]):
             self.__petri.addCellFirstTime(Cell(self.__petri, HerbivorLive(), 0, CellType.HERBIVOR))
-        for i in range(self.__petriPythonConf["nbCellsGrass"]):
+        for i in range(self.__petriPythonConf["nbCellsCarnivor"]):
+            self.__petri.addCellFirstTime(Cell(self.__petri, CarnivorLive(), 0, CellType.CARNIVOROUS))
+        for i in range(self.__petriPythonConf["nbCellsCarnivor"]):
+            self.__petri.addCellFirstTime(Cell(self.__petri, OmenivorLive(), 0, CellType.OMNIVOROUS))
+        for i in range(self.__petriPythonConf["nbCellsOmnivor"]):
             self.__petri.addCellFirstTime(Cell(self.__petri, GrassDie(), 0, CellType.GRASS))
 
     def getPetriById(self, idPetri: int) -> IPetri:

@@ -42,7 +42,7 @@ class View:
         self.show()
 
     def show(self):
-        time.sleep(0.01)
+        time.sleep(0.5)
         self.__canvas.delete("all");
         totalCells = len(self.__model.getCells())
         totalKnowCells = len(self.__knowCells)

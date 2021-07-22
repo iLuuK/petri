@@ -65,7 +65,7 @@ class Petri(Data, IPetri):
                 return True
         return False
 
-    def canFeed(self, initialX: int, initialY: int, cellType: CellType):
+    def canFeed(self, initialX: int, initialY: int, cellType):
         value = []
         distance = 10000
         isUse = False
@@ -76,11 +76,12 @@ class Petri(Data, IPetri):
                 test = self.__squareUsed[useX, useY]
                 if self.__squareUsed[useX, useY]:
 
-                    if self.isCellType(useX, useY, cellType):
-                        newDistance = abs(useX - initialX) + abs(useY - initialY)
-                        if newDistance < distance:
-                            value = [useX, useY]
-                            distance = newDistance
+                    for type in cellType:
+                        if self.isCellType(useX, useY, type):
+                            newDistance = abs(useX - initialX) + abs(useY - initialY)
+                            if newDistance < distance:
+                                value = [useX, useY]
+                                distance = newDistance
 
         if isUse:
             value = []
