@@ -7,17 +7,19 @@ import random
 
 
 class HerbivorLive(BehaviorLive):
-
     __energyStart = 20
-    __energyReproduce = 50
+    __energyReproduce = 65
     __energyWait = 1
     __energyMove = 2
     __baseColor = Color(0, 255, 0)
+    __scaleUp1 = 30
+    __scaleUp2 = 50
 
     def __init__(self):
         BehaviorLive.__init__(self, self.__energyStart, self.__baseColor)
 
     def live(self):
+        self.__checkScale()
         if not self.__checkIsAlive():
             if not self.__reproduce():
                 if not self.__feed():
@@ -25,16 +27,24 @@ class HerbivorLive(BehaviorLive):
                         if not self.__randomMove():
                             self.__wait()
 
+    def __checkScale(self):
+        newScale = 1
+        if self.getCell().getEnergy() >= self.__scaleUp1:
+            newScale = 2
+
+        if self.getCell().getEnergy() >= self.__scaleUp2:
+            newScale = 3
+
+        self.getCell().setScale(newScale)
 
     def __reproduce(self):
         if self.getCell().getIsAlive() and self.getCell().canAction(self.__energyReproduce):
             self.getCell().setEnergy(int(self.getCell().getEnergy() / 2))
             self.__wait()
-            self.__randomMove()
+            self.__randomMove(self.getCell().getScale() - 1)
             return True
         return False
 
-                        
     def __wait(self):
         energy = self.getCell().getEnergy() - self.__energyWait
         newCell = Cell(self.getCell().getPetri(), HerbivorLive(), self.getCell().getBirthStep() + 1, CellType.HERBIVOR)
@@ -42,22 +52,22 @@ class HerbivorLive(BehaviorLive):
         newCell.setColor(Color(0, 255, 0))
         newCell.setX(self.getCell().getX())
         newCell.setY(self.getCell().getY())
+        newCell.setScale(self.getCell().getScale())
         self.getCell().getPetri().addCell(newCell, self.getCell())
 
-
-    def __randomMove(self):
+    def __randomMove(self, distance: int = 0):
         if self.getCell().canAction(self.__energyMove):
-            
+
             canMove = False
             nbTry = 0
-            while (not canMove) and nbTry < 10:
-                nbTry+= 1
-                
+            while (not canMove) and nbTry < 20:
+                nbTry += 1
+
                 if random.randint(0, 1) == 1:
-                    randomX = self.getCell().getX() + random.randint(-1, 1)
+                    randomX = self.getCell().getX() + random.randint(-1, 1) + distance
                     randomY = self.getCell().getY()
                 else:
-                    randomY = self.getCell().getY() + random.randint(-1, 1)
+                    randomY = self.getCell().getY() + random.randint(-1, 1) + distance
                     randomX = self.getCell().getX()
 
                 if randomX < 0:
@@ -69,9 +79,8 @@ class HerbivorLive(BehaviorLive):
                 randomX = randomX % self.getCell().getPetri().getWidth()
                 randomY = randomY % self.getCell().getPetri().getHeight()
 
-                if self.getCell().getPetri().isSquareFree(randomX, randomY):
+                if self.getCell().getPetri().isSquareFree(self.getCell().getScale(), randomX, randomY):
                     canMove = True
-
 
             if canMove:
                 newCell = Cell(self.getCell().getPetri(), HerbivorLive(), self.getCell().getBirthStep() + 1, CellType.HERBIVOR)
@@ -80,9 +89,10 @@ class HerbivorLive(BehaviorLive):
                 newCell.setX(randomX)
                 newCell.setY(randomY)
                 newCell.setType(CellType.HERBIVOR)
+                newCell.setScale(self.getCell().getScale())
                 self.getCell().getPetri().addCell(newCell, self.getCell())
                 return True
-            
+
             return False
         return False
 
@@ -101,8 +111,14 @@ class HerbivorLive(BehaviorLive):
         feedPosition = self.getCell().getPetri().canFeed(self.getCell().getX(), self.getCell().getY(), CellType.GRASS)
 
         if feedPosition:
+            canFeed = False
+            for scaleX in range(self.getCell().getScale()):
+                for scaleY in range(self.getCell().getScale()):
+                    if feedPosition[0] == self.getCell().getX() + scaleX and feedPosition[
+                        1] == self.getCell().getY() + scaleY:
+                        canFeed = True
 
-            if feedPosition[0] == self.getCell().getX() and feedPosition[1] == self.getCell().getY():
+            if canFeed:
                 food = self.getCell().getPetri().getCell(feedPosition[0], feedPosition[1])
                 newCell = self.getCell()
                 newCell.setEnergy(self.getCell().getEnergy() + food.getEnergy())
@@ -111,14 +127,15 @@ class HerbivorLive(BehaviorLive):
                 newCell.setX(self.getCell().getX())
                 newCell.setY(self.getCell().getY())
                 newCell.setType(CellType.HERBIVOR)
+                newCell.setScale(self.getCell().getScale())
+
                 self.getCell().getPetri().addCell(newCell, self.getCell())
+
                 return True
         return False
 
-
     def canGo(self, x: int, y: int) -> bool:
         return not self.getCell().getPetri().isCellType(x, y, CellType.HERBIVOR)
-
 
     def __goToFeed(self):
         feedPosition = self.getCell().getPetri().canFeed(self.getCell().getX(), self.getCell().getY(), CellType.GRASS)
@@ -129,7 +146,7 @@ class HerbivorLive(BehaviorLive):
 
             if self.getCell().getX() == feedPosition[0]:
                 if abs(self.getCell().getY() - feedPosition[1]) < 5:
-                    if(self.getCell().getY() - feedPosition[1] < 0):
+                    if (self.getCell().getY() - feedPosition[1] < 0):
                         newPositionY += 1
                     else:
                         newPositionY -= 1
@@ -140,7 +157,7 @@ class HerbivorLive(BehaviorLive):
                         newPositionY += 1
             else:
                 if abs(self.getCell().getX() - feedPosition[0]) < 5:
-                    if(self.getCell().getX() - feedPosition[0] < 0):
+                    if (self.getCell().getX() - feedPosition[0] < 0):
                         newPositionX += 1
                     else:
                         newPositionX -= 1
@@ -150,27 +167,23 @@ class HerbivorLive(BehaviorLive):
                     else:
                         newPositionX += 1
 
-            if newPositionX < 0 :
-                newPositionX = self.getCell().getPetri().getWidth()
-
-            if newPositionY < 0 :
-                newPositionY = self.getCell().getPetri().getHeight()
-
             newPositionX = newPositionX % self.getCell().getPetri().getWidth()
             newPositionY = newPositionY % self.getCell().getPetri().getHeight()
-                    
+
             futureCell = self.getCell().getPetri().getCell(newPositionX, newPositionY)
             if futureCell is not None and self.canGo(newPositionX, newPositionY):
                 if futureCell.getType() != CellType.GRASS:
                     return False
 
-            newCell = Cell(self.getCell().getPetri(), HerbivorLive(), self.getCell().getBirthStep() + 1, CellType.HERBIVOR)
+            newCell = Cell(self.getCell().getPetri(), HerbivorLive(), self.getCell().getBirthStep() + 1,
+                           CellType.HERBIVOR)
             newCell.setEnergy(self.getCell().getEnergy() - self.__energyMove)
             newCell.setColor(Color(0, 255, 0))
 
             newCell.setX(newPositionX)
             newCell.setY(newPositionY)
             newCell.setType(CellType.HERBIVOR)
+            newCell.setScale(self.getCell().getScale())
             self.getCell().getPetri().addCell(newCell, self.getCell())
             return True
         return False

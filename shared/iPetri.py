@@ -37,7 +37,7 @@ class IPetri(IData):
         ...
 
     @abstractmethod
-    def isSquareFree(self, x: int, y: int) -> bool:
+    def isSquareFree(self, scale: int, x: int, y: int) -> bool:
         ...
 
     @abstractmethod

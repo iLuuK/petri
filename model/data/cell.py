@@ -20,6 +20,7 @@ class Cell(ICell, Data):
         self.__color = behaviorLive.getColor()
         self.__energy = behaviorLive.getEnergy()
         self.__isAlive = True
+        self.__sizeScale = 1
         Data.__init__(self, id(self))
 
     def getX(self) -> int:
@@ -27,6 +28,12 @@ class Cell(ICell, Data):
 
     def setX(self, x: int):
         self.__x = x
+
+    def getScale(self):
+        return self.__sizeScale
+
+    def setScale(self, value: int):
+        self.__sizeScale = value
 
     def getY(self) -> int:
         return self.__y

@@ -55,26 +55,37 @@ class Petri(Data, IPetri):
 
     def addCell(self, newCell: ICell, oldCell: ICell):
         if oldCell in self.__cells:
-            self.__squareUsed[oldCell.getX(), oldCell.getY()] = False
+            valueX = oldCell.getX() % self.getWidth()
+            valueY = oldCell.getY() % self.getHeight()
+            self.__squareUsed[valueX, valueY] = False
             self.__cells.remove(oldCell)
 
-        self.__squareUsed[newCell.getX(), newCell.getY()] = True
+        valueX = newCell.getX() % self.getWidth()
+        valueY = newCell.getY() % self.getHeight()
+        self.__squareUsed[valueX, valueY] = True
         self.__cells.append(newCell)
 
     def addCellFirstTime(self, newCell: ICell):
-        if self.isSquareFree(newCell.getX(), newCell.getY()):
-            self.__squareUsed[newCell.getX(), newCell.getY()] = True
+        if self.isSquareFree(1, newCell.getX(), newCell.getY()):
+            valueX = newCell.getX() % self.getWidth()
+            valueY = newCell.getY() % self.getHeight()
+            self.__squareUsed[valueX, valueY] = True
             self.__cells.append(newCell)
 
     def removeCell(self, oldCell: ICell):
         self.__squareUsed[oldCell.getX(), oldCell.getY()] = False
         self.__cells.remove(oldCell)
 
-    def isSquareFree(self, x: int, y: int) -> bool:
-        if 0 <= x < self.__width and 0 <= y < self.__height:
-            if not self.__squareUsed[x, y]:
-                return True
-        return False
+    def isSquareFree(self, scale: int, x: int, y: int) -> bool:
+        value = True
+        for scaleX in range(-scale + 1, scale - 1):
+            for scaleY in range(-scale, scale):
+                valueX = (x + scaleX) % self.__width
+                valueY = (y + scaleY) % self.__width
+                if 0 <= x < self.__width and 0 <= y < self.__height:
+                    if self.__squareUsed[valueX, valueY]:
+                        value = False
+        return value
 
     def canFeed(self, initialX: int, initialY: int, cellType: CellType):
         value = []

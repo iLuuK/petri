@@ -14,6 +14,14 @@ class ICell(IData):
         ...
 
     @abstractmethod
+    def getScale(self) -> int:
+        ...
+
+    @abstractmethod
+    def setScale(self, value: int) -> int:
+        ...
+
+    @abstractmethod
     def getColor(self) -> IColor:
         ...
 

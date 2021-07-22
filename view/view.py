@@ -65,13 +65,13 @@ class View:
         return cell.getX() * (self.__window.winfo_width() / cell.getPetri().getWidth())
 
     def __cellGetX1Scaled(self, cell: ICell):
-        return (cell.getX() + 1) * (self.__window.winfo_width() / cell.getPetri().getWidth())
+        return (cell.getX() + (1 * cell.getScale())) * (self.__window.winfo_width() / cell.getPetri().getWidth())
 
     def __cellGetY0Scaled(self, cell: ICell):
         return cell.getY() * (self.__window.winfo_height() / cell.getPetri().getHeight())
 
     def __cellGetY1Scaled(self, cell: ICell):
-        return (cell.getY() + 1) * (self.__window.winfo_height() / cell.getPetri().getHeight())
+        return (cell.getY() + (1 * cell.getScale())) * (self.__window.winfo_height() / cell.getPetri().getHeight())
 
     def __on_closing(self):
         self.__controller.performAction(Action.close)
