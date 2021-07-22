@@ -89,6 +89,8 @@ class Cell(ICell, Data):
         return self.__energy
 
     def setEnergy(self, energy: int):
+        if energy < 0:
+            energy = 0
         self.__energy = energy
 
 

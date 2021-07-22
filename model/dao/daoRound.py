@@ -4,6 +4,7 @@ from model.dao.dao import DAO
 from model.data.behavior.carnivorousLive import CarnivorousLive
 from model.data.behavior.grassDie import GrassDie
 from model.data.behavior.herbivorLive import HerbivorLive
+from model.data.behavior.omnivorous import OmnivorousLive
 from model.dbconnector import DBConnector
 from shared.cellType import CellType
 from shared.iCell import ICell
@@ -53,15 +54,19 @@ class DAORound(DAO):
                     cell = Cell(petri, HerbivorLive(), cellDict["birthStep"], CellType.HERBIVOR)
                 elif cellDict["cellType"][0] == 4:
                     cell = Cell(petri, GrassDie(), cellDict["birthStep"], CellType.GRASS)
-                elif cellDict["cellType"][0] == 3:
+                elif cellDict["cellType"][0] == 2:
                     cell = Cell(petri, CarnivorousLive(), cellDict["birthStep"], CellType.CARNIVOROUS)
+                elif cellDict["cellType"][0] == 3:
+                    cell = Cell(petri, OmnivorousLive(), cellDict["birthStep"], CellType.OMNIVOROUS)
             else:
                 if cellDict["cellType"] == 1:
                     cell = Cell(petri, HerbivorLive(), cellDict["birthStep"], CellType.HERBIVOR)
                 elif cellDict["cellType"] == 4:
                     cell = Cell(petri, GrassDie(), cellDict["birthStep"], CellType.GRASS)
-                elif cellDict["cellType"] == 3:
+                elif cellDict["cellType"] == 2:
                     cell = Cell(petri, CarnivorousLive(), cellDict["birthStep"], CellType.CARNIVOROUS)
+                elif cellDict["cellType"] == 3:
+                    cell = Cell(petri, OmnivorousLive(), cellDict["birthStep"], CellType.OMNIVOROUS)
 
             cell.setId(cellDict["_id"])
             cell.setX(cellDict["x"])

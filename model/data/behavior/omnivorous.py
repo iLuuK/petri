@@ -7,14 +7,14 @@ import random
 
 
 
-class CarnivorousLive(BehaviorLive):
+class OmnivorousLive(BehaviorLive):
     __energyStart = 50
-    __energyReproduce = 150
-    __energyWait = 1
-    __energyMove = 2
-    __baseColor = Color(135, 0, 0)
-    __rangeSearchFeed = 30
-    __rangeGoToFeed = 3
+    __energyReproduce = 300
+    __energyWait = 5
+    __energyMove = 15
+    __baseColor = Color(0, 0, 130)
+    __rangeSearchFeed = 10
+    __rangeGoToFeed = 2
 
     def __init__(self):
         BehaviorLive.__init__(self, self.__energyStart, self.__baseColor)
@@ -49,16 +49,16 @@ class CarnivorousLive(BehaviorLive):
 
 
     def __feed(self):
-        feedPosition = self.getCell().getPetri().canFeed(self.__rangeSearchFeed, self.getCell().getX(), self.getCell().getY(), [CellType.HERBIVOR])
+        feedPosition = self.getCell().getPetri().canFeed(self.__rangeSearchFeed, self.getCell().getX(), self.getCell().getY(), [CellType.HERBIVOR, CellType.CARNIVOROUS, CellType.GRASS])
         if feedPosition:
             if feedPosition[0] == self.getCell().getX() and feedPosition[1] == self.getCell().getY():
-                food = self.getCell().getPetri().getCell(feedPosition[0], feedPosition[1], [CellType.HERBIVOR])
+                food = self.getCell().getPetri().getCell(feedPosition[0], feedPosition[1], [CellType.HERBIVOR, CellType.CARNIVOROUS, CellType.GRASS])
                 if food is None:
                     return False
                 newCell = self.getCell()
                 newCell.setEnergy(self.getCell().getEnergy() + food.getEnergy())
                 food.setIsAlive(False)
-                newCell.setColor(Color(135, 0, 0))
+                newCell.setColor(Color(0, 0, 135))
                 newCell.setX(self.getCell().getX())
                 newCell.setY(self.getCell().getY())
                 self.getCell().getPetri().addCell(newCell, self.getCell())
@@ -66,14 +66,14 @@ class CarnivorousLive(BehaviorLive):
         return False
 
     def canGo(self, x: int, y: int) -> bool:
-        return not self.getCell().getPetri().isCellType(x, y, CellType.CARNIVOROUS)
+        return not self.getCell().getPetri().isCellType(x, y, CellType.OMNIVOROUS)
 
-    def hasNotCarnivorous(self, x: int, y: int) -> bool:
-        return not self.getCell().getPetri().isCellTypeNotSame(self.getCell().getCustomId(), x, y, CellType.CARNIVOROUS)
+    def hasNotOmnivorous(self, x: int, y: int) -> bool:
+        return not self.getCell().getPetri().isCellTypeNotSame(self.getCell().getCustomId(), x, y, CellType.OMNIVOROUS)
 
     def __goToFeed(self):
-        feedPosition = self.getCell().getPetri().canFeed(self.__rangeSearchFeed, self.getCell().getX(), self.getCell().getY(), [CellType.HERBIVOR, CellType.OMNIVOROUS])
-        if feedPosition and self.getCell().canAction(self.__energyMove) and self.hasNotCarnivorous(feedPosition[0], feedPosition[1]):
+        feedPosition = self.getCell().getPetri().canFeed(self.__rangeSearchFeed, self.getCell().getX(), self.getCell().getY(), [CellType.HERBIVOR, CellType.CARNIVOROUS, CellType.GRASS])
+        if feedPosition and self.getCell().canAction(self.__energyMove) and self.hasNotOmnivorous(feedPosition[0], feedPosition[1]):
             newPositionX = self.getCell().getX()
             newPositionY = self.getCell().getY()
 
@@ -100,9 +100,9 @@ class CarnivorousLive(BehaviorLive):
             if not self.canGo(newPositionX, newPositionY):
                 return False
 
-            newCell = Cell(self.getCell().getPetri(), CarnivorousLive(), self.getCell().getBirthStep() + 1, CellType.CARNIVOROUS)
+            newCell = Cell(self.getCell().getPetri(), OmnivorousLive(), self.getCell().getBirthStep() + 1, CellType.OMNIVOROUS)
             newCell.setEnergy(self.getCell().getEnergy() - self.__energyMove)
-            newCell.setColor(Color(135, 0, 0))
+            newCell.setColor(Color(0, 0, 135))
             newCell.setX(newPositionX)
             newCell.setY(newPositionY)
             newCell.setScale(self.getCell().getScale())
@@ -139,13 +139,13 @@ class CarnivorousLive(BehaviorLive):
                     canMove = True
 
             if canMove:
-                newCell = Cell(self.getCell().getPetri(), CarnivorousLive(), self.getCell().getBirthStep() + 1,
-                               CellType.CARNIVOROUS)
+                newCell = Cell(self.getCell().getPetri(), OmnivorousLive(), self.getCell().getBirthStep() + 1,
+                               CellType.OMNIVOROUS)
                 newCell.setEnergy(self.getCell().getEnergy() - self.__energyMove)
-                newCell.setColor(Color(135, 0, 0))
+                newCell.setColor(Color(0, 0, 135))
                 newCell.setX(randomX)
                 newCell.setY(randomY)
-                newCell.setType(CellType.CARNIVOROUS)
+                newCell.setType(CellType.OMNIVOROUS)
                 self.getCell().getPetri().addCell(newCell, self.getCell())
                 return True
 
@@ -154,9 +154,9 @@ class CarnivorousLive(BehaviorLive):
 
     def __wait(self):
         energy = self.getCell().getEnergy() - self.__energyWait
-        newCell = Cell(self.getCell().getPetri(), CarnivorousLive(), self.getCell().getBirthStep() + 1, CellType.CARNIVOROUS)
+        newCell = Cell(self.getCell().getPetri(), OmnivorousLive(), self.getCell().getBirthStep() + 1, CellType.OMNIVOROUS)
         newCell.setEnergy(energy)
-        newCell.setColor(Color(135, 0, 0))
+        newCell.setColor(Color(0, 0, 135))
         newCell.setX(self.getCell().getX())
         newCell.setY(self.getCell().getY())
         self.getCell().getPetri().addCell(newCell, self.getCell())
