@@ -27,7 +27,7 @@ class DAOPetri(DAO):
                 "x": cell.getX(),
                 "y": cell.getY(),
                 "birthStep": cell.getBirthStep(),
-                "color":  {
+                "color": {
                     "red": cell.getColor().getRed(),
                     "green": cell.getColor().getGreen(),
                     "blue": cell.getColor().getBlue()
@@ -39,10 +39,9 @@ class DAOPetri(DAO):
             cellsDict.append(cellDict)
 
         self.getCollection().update_one({"_id": petri.getId()}, {"$push": {"Rounds": cellsDict}})
-        self.getCollection().find_one_and_update({"_id": petri.getId()}, {"$set": {"numberRound": petri.getNumberRound()}})
+        self.getCollection().find_one_and_update({"_id": petri.getId()},
+                                                 {"$set": {"numberRound": petri.getNumberRound()}})
         print(petri.getNumberRound())
-
-
 
     def loadRound(self, myId: int, round: int):
         petriDict = self.getCollection().find({"_id": myId})[0]

@@ -11,7 +11,8 @@ class Petri(Data, IPetri):
         self.__width = width
         self.__height = height
         self.__cells: [ICell] = []
-        self.__squareUsed = numpy.zeros((width, height), dtype=bool)
+        self.__squareUsed = numpy.zeros((width, height), dtype= bool)
+        self.__squareType = numpy.zeros((width, height), dtype= CellType)
         Data.__init__(self, id(self))
 
 
@@ -41,9 +42,8 @@ class Petri(Data, IPetri):
 
     def isCellType(self, x: int, y: int, cellType: CellType) -> bool:
         value = False
-        for cell in self.__cells:
-            if cell.getY() == y and cell.getX() == x and cell.getType() == cellType:
-                value = True
+        if self.__squareType[x, y] == cellType:
+            value = True
         return value
 
     def isCellTypeNotSame(self, actualId: int, x: int, y: int, cellType: CellType) -> bool:
@@ -61,15 +61,16 @@ class Petri(Data, IPetri):
         return value
 
     def addCell(self, newCell: ICell, oldCell: ICell):
-        if oldCell in self.__cells:
-            valueX = oldCell.getX() % self.getWidth()
-            valueY = oldCell.getY() % self.getHeight()
-            self.__squareUsed[valueX, valueY] = False
-            self.__cells.remove(oldCell)
+        if oldCell in self.getCells():
+            self.removeCell(oldCell)
 
-        valueX = newCell.getX() % self.getWidth()
-        valueY = newCell.getY() % self.getHeight()
-        self.__squareUsed[valueX, valueY] = True
+        for scaleX in range(0, oldCell.getScale()):
+            for scaleY in range(0, oldCell.getScale()):
+                valueX = (oldCell.getX() + scaleX) % self.getWidth()
+                valueY = (oldCell.getY() + scaleY) % self.getHeight()
+                self.__squareUsed[valueX, valueY] = True
+                self.__squareType[valueX, valueY] = newCell.getType()
+
         self.__cells.append(newCell)
 
     def addCellFirstTime(self, newCell: ICell):
@@ -77,10 +78,18 @@ class Petri(Data, IPetri):
             valueX = newCell.getX() % self.getWidth()
             valueY = newCell.getY() % self.getHeight()
             self.__squareUsed[valueX, valueY] = True
+            self.__squareType[valueX, valueY] = newCell.getType()
             self.__cells.append(newCell)
 
     def removeCell(self, oldCell: ICell):
-        self.__squareUsed[oldCell.getX(), oldCell.getY()] = False
+        if oldCell in self.__cells:
+            for scaleX in range(0, oldCell.getScale()):
+                for scaleY in range(0, oldCell.getScale()):
+                    valueX = (oldCell.getX() + scaleX) % self.getWidth()
+                    valueY = (oldCell.getY() + scaleY) % self.getHeight()
+                    self.__squareUsed[valueX, valueY] = False
+                    self.__squareType[valueX, valueY] = CellType.NONE
+
         self.__cells.remove(oldCell)
 
     def isSquareFree(self, scale: int, x: int, y: int) -> bool:
@@ -97,21 +106,15 @@ class Petri(Data, IPetri):
     def canFeed(self, initialX: int, initialY: int, cellType: CellType):
         value = []
         distance = 10000
-        isUse = False
         for x in range(-20, 20):
             for y in range(-20, 20):
                 useX = (x + initialX) % self.getWidth()
                 useY = (y + initialY) % self.getHeight()
-                test = self.__squareUsed[useX, useY]
                 if self.__squareUsed[useX, useY]:
-
                     if self.isCellType(useX, useY, cellType):
                         newDistance = abs(useX - initialX) + abs(useY - initialY)
                         if newDistance < distance:
                             value = [useX, useY]
                             distance = newDistance
-
-        if isUse:
-            value = []
 
         return value

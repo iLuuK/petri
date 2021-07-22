@@ -8,7 +8,7 @@ import random
 
 class HerbivorLive(BehaviorLive):
     __energyStart = 20
-    __energyReproduce = 65
+    __energyReproduce = 70
     __energyWait = 1
     __energyMove = 2
     __baseColor = Color(0, 255, 0)
@@ -41,7 +41,7 @@ class HerbivorLive(BehaviorLive):
         if self.getCell().getIsAlive() and self.getCell().canAction(self.__energyReproduce):
             self.getCell().setEnergy(int(self.getCell().getEnergy() / 2))
             self.__wait()
-            self.__randomMove(self.getCell().getScale() - 1)
+            self.__randomMove(self.getCell().getScale())
             return True
         return False
 
@@ -79,7 +79,7 @@ class HerbivorLive(BehaviorLive):
                 randomX = randomX % self.getCell().getPetri().getWidth()
                 randomY = randomY % self.getCell().getPetri().getHeight()
 
-                if self.getCell().getPetri().isSquareFree(self.getCell().getScale(), randomX, randomY):
+                if not self.getCell().getPetri().isSquareFree(self.getCell().getScale(), randomX, randomY):
                     canMove = True
 
             if canMove:
@@ -119,6 +119,8 @@ class HerbivorLive(BehaviorLive):
 
             if canFeed:
                 food = self.getCell().getPetri().getCell(feedPosition[0], feedPosition[1])
+                if food is None:
+                    return False
                 newCell = self.getCell()
                 newCell.setEnergy(self.getCell().getEnergy() + food.getEnergy())
                 food.setIsAlive(False)
@@ -134,11 +136,22 @@ class HerbivorLive(BehaviorLive):
         return False
 
     def canGo(self, x: int, y: int) -> bool:
+        value = True
+        for scaleX in range(0, self.getCell().getScale()):
+            for scaleY in range(0, self.getCell().getScale()):
+                valueX = (self.getCell().getX() + scaleX) % self.getCell().getPetri().getWidth()
+                valueY = (self.getCell().getY() + scaleY) % self.getCell().getPetri().getHeight()
+                if self.getCell().getPetri().isCellTypeNotSame(self.getCell().getId(), valueX, valueY, CellType.HERBIVOR):
+                    value = False
+
+        return value
+
+    def hasNotHerbivor(self, x: int, y: int) -> bool:
         return not self.getCell().getPetri().isCellTypeNotSame(self.getCell().getId(), x, y, CellType.HERBIVOR)
 
     def __goToFeed(self):
         feedPosition = self.getCell().getPetri().canFeed(self.getCell().getX(), self.getCell().getY(), CellType.GRASS)
-        if feedPosition and self.getCell().canAction(self.__energyMove) and self.canGo(feedPosition[0], feedPosition[1]):
+        if feedPosition and self.getCell().canAction(self.__energyMove) and self.hasNotHerbivor(feedPosition[0], feedPosition[1]):
 
             newPositionX = self.getCell().getX()
             newPositionY = self.getCell().getY()

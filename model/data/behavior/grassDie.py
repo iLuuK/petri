@@ -7,7 +7,7 @@ import random
 
 class GrassDie(BehaviorLive):
 
-    __energyStart = 20
+    __energyStart = 25
     __baseColor = Color(173, 103, 0)
 
     def __init__(self):

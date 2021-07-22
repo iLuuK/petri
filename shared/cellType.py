@@ -6,4 +6,5 @@ class CellType(Enum):
     CARNIVOROUS = 2,
     OMNIVOROUS = 3,
     GRASS = 4
+    NONE = 5
 
