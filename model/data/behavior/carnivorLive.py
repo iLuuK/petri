@@ -6,6 +6,7 @@ from shared.cellType import CellType
 import random
 
 
+
 class CarnivorLive(BehaviorLive):
     __energyStart = 20
     __energyReproduce = 50
@@ -48,9 +49,7 @@ class CarnivorLive(BehaviorLive):
 
     def __feed(self):
         feedPosition = self.getCell().getPetri().canFeed(self.getCell().getX(), self.getCell().getY(), [CellType.HERBIVOR, CellType.OMNIVOROUS])
-
         if feedPosition:
-
             if feedPosition[0] == self.getCell().getX() and feedPosition[1] == self.getCell().getY():
                 food = self.getCell().getPetri().getCell(feedPosition[0], feedPosition[1])
                 newCell = self.getCell()

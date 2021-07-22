@@ -31,6 +31,7 @@ class Petri(Data, IPetri):
     def isCellType(self, x: int, y: int, cellType: CellType) -> bool:
         value = False
         for cell in self.__cells:
+            truc = cell.getType()
             if cell.getY() == y and cell.getX() == x and cell.getType() == cellType:
                 value = True
         return value

@@ -39,6 +39,9 @@ class Cell(ICell, Data):
 
     def setColor(self, color: IColor):
         self.__color = color
+        if self.getEnergy() < 0:
+            nrj = self.getEnergy()
+            cell = self.getType()
         self.__color.lighter(self.getEnergy())
 
 
