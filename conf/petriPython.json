@@ -1,7 +1,7 @@
 {
   "width": 150,
   "height": 150,
-  "nbCellsHerbivor": 20,
+  "nbCellsHerbivor": 50,
   "nbCellsGrass": 1200,
   "drawCellBorder": 0
 }
