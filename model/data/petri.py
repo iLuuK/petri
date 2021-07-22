@@ -7,11 +7,22 @@ import numpy
 
 class Petri(Data, IPetri):
     def __init__(self, width: int, height: int):
+        self.__numberRound = 0
         self.__width = width
         self.__height = height
         self.__cells: [ICell] = []
         self.__squareUsed = numpy.zeros((width, height), dtype=bool)
         Data.__init__(self, id(self))
+
+
+    def getNumberRound(self) -> int:
+        return self.__numberRound
+
+    def setNumberRound(self, number: int):
+        self.__numberRound = number
+
+    def updateNumberRound(self):
+        self.__numberRound += 1
 
     def getWidth(self) -> int:
         return self.__width

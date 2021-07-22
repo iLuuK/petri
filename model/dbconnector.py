@@ -19,3 +19,4 @@ class DBConnector:
 
     def getCollection(self, collection: str):
         return self.__db[collection]
+

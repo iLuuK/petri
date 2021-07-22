@@ -14,15 +14,28 @@ class Controller(IController):
         self.__play = True
 
     def live(self):
-        while self.__run:
-            if self.__play:
-                self.__view.show()
-                oldCells = self.__model.getCells().copy()
-                for cell in oldCells:
-                    cell.live()
-            else:
-                time.sleep(1)
-        self.__model.savePetri()
+        if self.__model.getIsLoadPetri():
+            self.__model.setLoadPetri()
+            round = 0
+            while round < self.__model.getNumberRound():
+                round += 1
+                if self.__play:
+                    self.__model.getRoundCell(round)
+                    self.__view.show()
+                else:
+                    time.sleep(1)
+        else:
+            self.__model.savePetri()
+            while self.__run:
+                if self.__play:
+                    self.__view.show()
+                    oldCells = self.__model.getCells().copy()
+                    self.__model.saveRound()
+                    for cell in oldCells:
+                        cell.live()
+                    self.__model.updateNumberRound()
+                else:
+                    time.sleep(1)
 
     def performAction(self, action: Action):
         if action == Action.play:

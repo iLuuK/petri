@@ -31,6 +31,7 @@ class IPetri(IData):
     def addCell(self, newCell: ICell, oldCell: ICell):
         ...
 
+
     @abstractmethod
     def removeCell(self, oldCell: ICell):
         ...
@@ -42,3 +43,17 @@ class IPetri(IData):
     @abstractmethod
     def canFeed(self, x: int, y: int, cellType: CellType):
         ...
+
+    @abstractmethod
+    def getNumberRound(self) -> int:
+        ...
+
+    @abstractmethod
+    def setNumberRound(self):
+        ...
+
+    @abstractmethod
+    def updateNumberRound(self):
+        ...
+
+

@@ -16,12 +16,28 @@ class Model(IModel):
         self.__dbConnector = DBConnector()
         self.__daoPetri = DAOPetri(self.__dbConnector)
         self.__loadConf()
-#        self.__petri: IPetri = self.__daoPetri.load(225426424)
+        self.__petriIdLoad = self.__petriPythonConf["loadPetriId"]
+        self.__isLoadPetri = self.__petriPythonConf["isLoadPetri"]
         self.__petri: IPetri = Petri(self.__petriPythonConf["width"], self.__petriPythonConf["height"])
         for i in range(self.__petriPythonConf["nbCellsHerbivor"]):
             self.__petri.addCellFirstTime(Cell(self.__petri, HerbivorLive(), 0, CellType.HERBIVOR))
         for i in range(self.__petriPythonConf["nbCellsGrass"]):
             self.__petri.addCellFirstTime(Cell(self.__petri, GrassDie(), 0, CellType.GRASS))
+
+    def getRoundCell(self, round: int):
+        self.__petri = self.__daoPetri.loadRound(self.__petri.getId(), round)
+
+    def getNumberRound(self):
+        return self.__petri.getNumberRound()
+
+    def getIsLoadPetri(self) -> bool:
+        return self.__isLoadPetri
+
+    def getLoadPetriId(self) -> int:
+        return self.__petriIdLoad
+
+    def setLoadPetri(self):
+        self.__petri = self.__daoPetri.loadPetri(self.__petriIdLoad)
 
     def getPetriById(self, idPetri: int) -> IPetri:
         return self.__petri
@@ -34,4 +50,10 @@ class Model(IModel):
             self.__petriPythonConf = json.load(jsonfile)
 
     def savePetri(self):
-        self.__daoPetri.save(self.__petri)
+        self.__daoPetri.savePetri(self.__petri)
+
+    def saveRound(self):
+        self.__daoPetri.saveRound(self.__petri)
+
+    def updateNumberRound(self):
+        self.__petri.updateNumberRound()

@@ -3,5 +3,7 @@
   "height": 150,
   "nbCellsHerbivor": 20,
   "nbCellsGrass": 1200,
-  "drawCellBorder": 0
+  "drawCellBorder": 0,
+  "isLoadPetri": true,
+  "loadPetriId": 2950792245744
 }
