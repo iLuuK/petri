@@ -1,6 +1,8 @@
 import time
 import tkinter.messagebox
 import tkinter
+
+from shared.cellType import CellType
 from shared.iController import IController
 from shared.iModel import IModel
 from shared.iColor import IColor
@@ -53,12 +55,22 @@ class View:
                 __outline = colorToHex(cell.getColor())
             else:
                 __outline = "white"
-            self.__canvas.create_rectangle(self.__cellGetX0Scaled(cell),
+
+            cellt = cell.getType()
+            if cellt == CellType.GRASS:
+                self.__canvas.create_oval(self.__cellGetX0Scaled(cell),
                                            self.__cellGetY0Scaled(cell),
                                            self.__cellGetX1Scaled(cell),
                                            self.__cellGetY1Scaled(cell),
                                            fill=colorToHex(cell.getColor()),
                                            outline=__outline)
+            else:
+                self.__canvas.create_rectangle(self.__cellGetX0Scaled(cell),
+                                               self.__cellGetY0Scaled(cell),
+                                               self.__cellGetX1Scaled(cell),
+                                               self.__cellGetY1Scaled(cell),
+                                               fill=colorToHex(cell.getColor()),
+                                               outline=__outline)
         self.__window.update()
 
     def __cellGetX0Scaled(self, cell: ICell):

@@ -2,10 +2,10 @@
   "width": 50,
   "height": 50,
   "nbCellsHerbivor": 10,
-  "nbCellsGrass": 200,
-  "nbCellsCarnivorous": 1,
-  "nbCellsOmniborous": 1,
+  "nbCellsGrass": 100,
+  "nbCellsCarnivorous": 2,
+  "nbCellsOmnivorous": 1,
   "drawCellBorder": 0,
   "isLoadPetri": false,
-  "loadPetriId": 2263829905952
+  "loadPetriId": 2113120105136
 }

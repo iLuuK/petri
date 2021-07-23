@@ -31,7 +31,7 @@ class Model(IModel):
             self.__petri.addCellFirstTime(Cell(self.__petri, GrassDie(), 0, CellType.GRASS))
         for i in range(self.__petriPythonConf["nbCellsCarnivorous"]):
                 self.__petri.addCellFirstTime(Cell(self.__petri, CarnivorousLive(), 0, CellType.CARNIVOROUS))
-        for i in range(self.__petriPythonConf["nbCellsOmniborous"]):
+        for i in range(self.__petriPythonConf["nbCellsOmnivorous"]):
                 self.__petri.addCellFirstTime(Cell(self.__petri, OmnivorousLive(), 0, CellType.OMNIVOROUS))
 
     def getRoundCell(self, round: int):
